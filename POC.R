@@ -7,7 +7,7 @@ set.seed(123)
 #V2 <- sample(1:10, size = 10, replace = TRUE)
 
 #Load the data
-data <- read_excel("Distance til 3 nodes 20 forsendelser PivotLonger.xlsx")
+data <- read_excel("~/GitHub/Network-Analysis-Speciale/Distance til 3 nodes 20 forsendelser PivotLonger.xlsx")
 
 
 dat1 <- data[data$Type == 'A',] #Type = A
@@ -29,6 +29,13 @@ d
 
 #Create the graph data object based on the dataframe
 g <- graph_from_data_frame(d, directed = FALSE)
+g
+
+#U = UNDIRECTED
+#N = name Attribute N
+#W = it's Weighted
+#- = It's not bipartite
+
 V(g)$label <- V(g)$name # set labels.
 
 # set type - these are merely used for plotting
@@ -91,6 +98,18 @@ plot.igraph(x = g, #The graph
             ,axes = T
             )
 
+############################
+#### Centrality Indices ####
+############################
+
+
+#dijkstra aka shortest path
+
+# install.packages("bipartite")
+library(bipartite)
+library(igraph)
+
+
 distances(
   g,
   v = V(g),
@@ -100,8 +119,10 @@ distances(
   algorithm = c("dijkstra")
 )
 
-mean_distance(graph = g)
 
+#Betweenness
+
+igraph::betweenness(g)
 
 
 ###### I THINK THIS IS JUST FOR SOME CENTERING FROM STACKOVERFLOW
