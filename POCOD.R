@@ -13,10 +13,11 @@ v1p <- c(dat1$Afsenderpostnr,rep('OD',20))
 v2p <- c(rep('OD',20),dat2$Afsenderpostnr)
 distances <- c(dat1$FCODkm,dat2$FCODkm)
 
-#Get the vector of Terminal --> delivery
-v1p <- c(v1p,dat1$Afsenderpostnr,rep('AR',20))
-v2p <- c(v2p,c(rep('AR',20),dat2$Afsenderpostnr))
-distances <- c(distances,c(dat1$FCARkm,dat2$FCARkm))
+  #### REMOVED AR AS THIS IS THE LEAST IMPORTANT VERTICE FOR THE NETWORK ####
+# #Get the vector of Terminal --> delivery
+# v1p <- c(v1p,dat1$Afsenderpostnr,rep('AR',20))
+# v2p <- c(v2p,c(rep('AR',20),dat2$Afsenderpostnr))
+# distances <- c(distances,c(dat1$FCARkm,dat2$FCARkm))
 
 #Combine and add weights
 d <- data.frame(V1 = v1p, V2 = v2p, weight = distances)
@@ -35,7 +36,7 @@ V(g)$label <- V(g)$name # set labels.
 
 # set type - these are merely used for plotting
 V(g)$type <- 1 #Start / slut
-V(g)[16:17]$type <- 2 #Terminal
+V(g)[16]$type <- 2 #Terminal
 
 V(g)$type
 
@@ -44,8 +45,8 @@ col <- c("steelblue", "orange", "green") #Green and circle is for a type 3 if we
 shape <- c("circle", "square", "circle")
 
 #Create vectors to nicely arrange nodes in columns
-V(g)$x <- c(rep(1,15),2,2,rep(3,16))
-V(g)$y <- c(seq(1,15,1),3,13,seq(1,16,1))
+V(g)$x <- c(rep(1,15),2,rep(3,16))
+V(g)$y <- c(seq(1,15,1),7,seq(1,16,1))
 
 # #Get latitude and longitude for spatial plotting
 #   
@@ -70,13 +71,25 @@ V(g)$y <- c(seq(1,15,1),3,13,seq(1,16,1))
 #   V(g)$x <- x
 #   V(g)$y <- y
 
+
 #This is the plot
 plot.igraph(x = g, #The graph
             vertex.color = col[V(g)$type], #Define colors type 1 = steelblue etc.
             vertex.shape = shape[V(g)$type],
             edge.width = E(g)$weight / 100 #Divide by 100 to decrease width of the edges
             ,axes = T
-            )
+)
+
+
+
+dist_matrix = distances(
+  g,
+  v = V(g),
+  to = V(g),
+  mode = c("all", "out", "in"),
+  weights = NULL,
+  algorithm = c("dijkstra")
+)
 
 ############################
 ###### Mean  Distance ######
@@ -107,3 +120,4 @@ igraph::betweenness(g) #Betweenness
 sort(closeness(g),decreasing = T) #Closeness
 plot(sort(closeness(g),decreasing = T)) #Closeness plotte
 sort(eigen_centrality(g)$vector,decreasing = T) %>% t() %>% t() #Eigen vector centrality
+
