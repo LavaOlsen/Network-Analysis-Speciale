@@ -50,5 +50,6 @@ for (i in 1:nrow(m)) {
   
 }
 
+saveRDS(m,file = "Files/TestDistanceMatrix.rds")
 
 
